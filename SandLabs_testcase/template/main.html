@@ -1,0 +1,98 @@
+<html>
+<head>
+</head>
+<body>
+    <form id="get_form">
+        <span>Получить курс в рублях</span>
+        <select id="currency"></select>
+        <button id="get">GET</button>
+    </form>
+    <form id="post_form">
+        <span>Конвертация из</span>
+        <select id="from"></select>
+        <span>в</span>
+        <select id="to"></select>
+        <input id="amount" placeholder="количество"></input>
+        <button id="post">POST</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        document.querySelectorAll("select").forEach(i => {
+            "AUD\
+            AZN\
+            AMD\
+            BYN\
+            BGN\
+            BRL\
+            HUF\
+            KRW\
+            HKD\
+            DKK\
+            USD\
+            EUR\
+            INR\
+            KZT\
+            CAD\
+            KGS\
+            CNY\
+            MDL\
+            TMT\
+            NOK\
+            PLN\
+            RON\
+            XDR\
+            SGD\
+            TJS\
+            TRY\
+            UZS\
+            UAH\
+            GBP\
+            CZK\
+            SEK\
+            CHF\
+            ZAR\
+            JPY\
+            RUB".split("            ").forEach(v => {
+                i.append(new Option(v));
+            });
+        });
+
+        const request = new XMLHttpRequest();
+        const url_get = "/api/course";
+        const url_post = "/api/convert";
+
+        get_form.onsubmit = function () {
+            request.open("GET", url_get + '/' + document.getElementById("currency").value);
+            
+            request.addEventListener("readystatechange", () => {
+                if(request.readyState === 4 && request.status === 200) {
+                    document.getElementById("result").innerText = request.responseText;
+                }
+            });
+            request.send();
+            return false;
+        }
+
+        post_form.onsubmit = function () {
+            request.open("POST", url_post, true);
+            
+            request.addEventListener("readystatechange", () => {
+                if(request.readyState === 4 && request.status === 200) {
+                    document.getElementById("result").innerText = request.responseText;
+                }
+            });
+
+            let	inquiry = {
+                "from_currency": document.getElementById("from").value,
+                "to_currency": document.getElementById("to").value,
+                "amount": Number.parseFloat(document.getElementById("amount").value)
+            };
+            let data = new FormData();
+            data.append("json", JSON.stringify(inquiry));
+            request.send(data);
+            return false;
+        }
+    </script>
+</body>
+</html>
